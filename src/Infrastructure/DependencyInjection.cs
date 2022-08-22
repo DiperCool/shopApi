@@ -55,6 +55,7 @@ public static class DependencyInjection
         services.AddTransient<IEmailSender, EmailSender>();
         services.AddTransient<IEmailTemplate, EmailTemplate>();
         services.AddTransient<IJWTService, JWTService>();
+        services.AddTransient<IFileService, Services.FileService>();
         services.AddTransient<IHashPassword, HashPassword>();
         services.AddScoped<ApplicationDbContextInitialiser>();
         services.AddTransient<IBillingService, StripeService>();

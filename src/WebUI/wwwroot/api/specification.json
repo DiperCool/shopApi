@@ -166,16 +166,35 @@
         ],
         "operationId": "Product_CreateProduct",
         "requestBody": {
-          "x-name": "command",
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/CreateProductCommand"
+                "type": "object",
+                "properties": {
+                  "Title": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "Description": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "Photos": {
+                    "type": "array",
+                    "nullable": true,
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  },
+                  "Price": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
               }
             }
-          },
-          "required": true,
-          "x-position": 1
+          }
         },
         "responses": {
           "200": {
@@ -261,6 +280,27 @@
           }
         }
       }
+    },
+    "/api/StripeWebhook": {
+      "post": {
+        "tags": [
+          "StripeWebhook"
+        ],
+        "operationId": "StripeWebhook_Index",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -322,15 +362,15 @@
         }
       },
       "PaymentType": {
-        "type": "integer",
+        "type": "string",
         "description": "",
         "x-enumNames": [
           "Stripe",
           "COD"
         ],
         "enum": [
-          0,
-          1
+          "Stripe",
+          "COD"
         ]
       },
       "SendEmailCommand": {
@@ -344,22 +384,6 @@
           "phone": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "CreateProductCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "price": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },

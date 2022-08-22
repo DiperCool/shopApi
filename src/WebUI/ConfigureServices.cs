@@ -2,9 +2,11 @@ using System.Text.Json.Serialization;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Infrastructure.Persistence;
 using CleanArchitecture.WebUI.Filters;
+using CleanArchitecture.WebUI.JsonConverters;
 using CleanArchitecture.WebUI.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Converters;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
@@ -26,11 +28,17 @@ public static class ConfigureServices
             .AddDbContextCheck<ApplicationDbContext>();
 
         services.AddControllersWithViews(options =>
-            options.Filters.Add<ApiExceptionFilterAttribute>())
-                .AddFluentValidation(x => x.AutomaticValidationEnabled = false).AddJsonOptions(options =>
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+            {
+                options.Filters.Add<ApiExceptionFilterAttribute>();
+                options.ModelValidatorProviders.Clear();
+            })
+            .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
 
-        services.AddRazorPages();
+        services.AddRazorPages().AddNewtonsoftJson(opts=>
+        {
+            opts.SerializerSettings.Converters.Add(new GuidConverter());
+            opts.SerializerSettings.Converters.Add(new StringEnumConverter());
+        });
 
         // Customise default API behaviour
         services.Configure<ApiBehaviorOptions>(options =>
@@ -39,7 +47,7 @@ public static class ConfigureServices
         services.AddOpenApiDocument(configure =>
         {
             configure.Title = "Shop API";
-            
+
             configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
             {
                 Type = OpenApiSecuritySchemeType.ApiKey,
@@ -49,7 +57,7 @@ public static class ConfigureServices
             });
 
             configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
-            
+
         });
         return services;
     }
