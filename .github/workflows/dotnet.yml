@@ -15,7 +15,7 @@ jobs:
         image: "postgres"
         ports:
           - '5433:5433'
-        environment:
+        env:
           POSTGRES_USER: "diper"
           POSTGRES_PASSWORD: "diper"
           POSTGRES_DB: "diper"
