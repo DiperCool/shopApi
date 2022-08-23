@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      sql:
+      postgres:
         image: "postgres"
         ports:
           - '5433:5433'
@@ -31,4 +31,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --configuration Release
       env:
-        ConnectionStrings__DefaultConnection: Host=sql;Port=5432;Database=diper;User id=diper;Password=diper
+        ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=diper;User id=diper;Password=diper
