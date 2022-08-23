@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Security;
+using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -31,9 +32,9 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
             {
                 throw new UnauthorizedAccessException();
             }
-            var mustBeAdmin = authorizeAttributes.Select(x=>x.MustBeAdmin);
-
-            if(mustBeAdmin.First()&&!(await _applicationDbContext.Users.AnyAsync(x=>x.Role==Role.Admin&&x.Id == _currentUserService.UserIdGuid)))
+            var mustBeAdmin = authorizeAttributes.Select(x=>x.MustBeAdmin).First();
+            User user = await _applicationDbContext.Users.AsNoTracking().Where(x=>x.Id == _currentUserService.UserIdGuid).FirstAsync();
+            if(mustBeAdmin&&!(user.Role==Role.Admin))
             {
                 throw new UnauthorizedAccessException();
             }

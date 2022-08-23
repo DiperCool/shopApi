@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.Orders.Command.CreateOrderCommand;
 [Authorize]
-public class CreateOrderCommand : IRequest<string>
+public class CreateOrderCommand : IRequest<CheckoutResponse>
 {
     public List<OrderItemModel> Items { get; set; } = new List<OrderItemModel>();
     public PaymentType PaymentType { get; set; }
 }
 
 
-public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, string>
+public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, CheckoutResponse>
 {
     IApplicationDbContext _applicationDbContext;
     ICurrentUserService _currentUserService;
@@ -25,7 +25,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
         _billingService = billingService;
     }
 
-    public async Task<string> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+    public async Task<CheckoutResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         Order order = new Order()
         {
@@ -35,7 +35,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
         };
         foreach (OrderItemModel item in request.Items)
         {
-            Product product = await _applicationDbContext.Products.FirstOrDefaultAsync(x => x.Id == item.ProductId) ?? throw new NotFoundException("Product not found");
+            Product product = await _applicationDbContext.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == item.ProductId) ?? throw new NotFoundException("Product not found");
             OrderItem orderItem = new OrderItem
             {
                 Product = product,
@@ -47,7 +47,17 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
         order.TotalPrice = order.OrderItems.Sum(x => x.TotalPrice);
         await _applicationDbContext.Orders.AddAsync(order);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
-        return request.PaymentType == PaymentType.Stripe ? _billingService.CreateCheckout(await _applicationDbContext.Users.FirstOrDefaultAsync(x => x.Id == _currentUserService.UserIdGuid) ?? throw new BadRequestException("Something went wrong"), order) : "";
+        CheckoutResponse checkoutResponse = new()
+        {
+            PaymentType = request.PaymentType,
+            CallbackUrl = request.PaymentType == PaymentType.Stripe ?
+                _billingService
+                    .CreateCheckout(await _applicationDbContext.Users
+                        .FirstOrDefaultAsync(x => x.Id == _currentUserService.UserIdGuid)
+                    ?? throw new BadRequestException("Something went wrong"), order) :
+                String.Empty
+        };
+        return checkoutResponse;
 
     }
 }
