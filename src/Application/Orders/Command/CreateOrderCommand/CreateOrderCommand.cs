@@ -35,7 +35,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Che
         };
         foreach (OrderItemModel item in request.Items)
         {
-            Product product = await _applicationDbContext.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == item.ProductId) ?? throw new NotFoundException("Product not found");
+            Product product = await _applicationDbContext.Products.FirstOrDefaultAsync(x => x.Id == item.ProductId) ?? throw new NotFoundException("Product not found");
             OrderItem orderItem = new OrderItem
             {
                 Product = product,
