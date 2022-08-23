@@ -17,12 +17,6 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                table: "Users",
-                type: "text",
-                nullable: true);
-
             migrationBuilder.AddColumn<DateTime>(
                 name: "LastModified",
                 table: "Users",
@@ -42,12 +36,6 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                table: "Products",
-                type: "text",
-                nullable: true);
-
             migrationBuilder.AddColumn<DateTime>(
                 name: "LastModified",
                 table: "Products",
@@ -66,12 +54,6 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 type: "timestamp with time zone",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                table: "Orders",
-                type: "text",
-                nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "LastModified",
@@ -86,7 +68,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 nullable: true);
 
             migrationBuilder.CreateTable(
-                name: "Photo",
+                name: "Photos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -99,9 +81,9 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Photo", x => x.Id);
+                    table.PrimaryKey("PK_Photos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Photo_Products_ProductId",
+                        name: "FK_Photos_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -109,22 +91,18 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Photo_ProductId",
-                table: "Photo",
+                name: "IX_Photos_ProductId",
+                table: "Photos",
                 column: "ProductId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Photo");
+                name: "Photos");
 
             migrationBuilder.DropColumn(
                 name: "Created",
-                table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "CreatedBy",
                 table: "Users");
 
             migrationBuilder.DropColumn(
@@ -140,10 +118,6 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 table: "Products");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                table: "Products");
-
-            migrationBuilder.DropColumn(
                 name: "LastModified",
                 table: "Products");
 
@@ -153,10 +127,6 @@ namespace CleanArchitecture.Infrastructure.Migrations
 
             migrationBuilder.DropColumn(
                 name: "Created",
-                table: "Orders");
-
-            migrationBuilder.DropColumn(
-                name: "CreatedBy",
                 table: "Orders");
 
             migrationBuilder.DropColumn(

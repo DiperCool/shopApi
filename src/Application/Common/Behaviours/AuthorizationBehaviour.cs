@@ -32,7 +32,8 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
                 throw new UnauthorizedAccessException();
             }
             var mustBeAdmin = authorizeAttributes.Select(x=>x.MustBeAdmin);
-            if(!(await _applicationDbContext.Users.AnyAsync(x=>x.Role==Role.Admin&&x.Id == _currentUserService.UserIdGuid)))
+
+            if(mustBeAdmin.First()&&!(await _applicationDbContext.Users.AnyAsync(x=>x.Role==Role.Admin&&x.Id == _currentUserService.UserIdGuid)))
             {
                 throw new UnauthorizedAccessException();
             }

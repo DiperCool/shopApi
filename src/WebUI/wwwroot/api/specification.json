@@ -280,27 +280,6 @@
           }
         }
       }
-    },
-    "/api/StripeWebhook": {
-      "post": {
-        "tags": [
-          "StripeWebhook"
-        ],
-        "operationId": "StripeWebhook_Index",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
