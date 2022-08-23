@@ -31,4 +31,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --configuration Release
       env:
-        ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=diper;User id=diper;Password=diper
+        ConnectionStrings__DefaultConnection: Host=sql;Port=5432;Database=diper;User id=diper;Password=diper
