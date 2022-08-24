@@ -5,9 +5,9 @@ using CleanArchitecture.Application.Users.Query.GetMe;
 using FluentAssertions;
 using NUnit.Framework;
 using static Testing;
-public class GetMeTest: BaseTestFixture
+public class GetMeTest : BaseTestFixture
 {
-     [Test]
+    [Test]
     public async Task ShouldDenyAnonymousUser()
     {
         var command = new AuthUserQuery();
@@ -21,12 +21,12 @@ public class GetMeTest: BaseTestFixture
     [Test]
     public async Task ShouldNotBeEmpty()
     {
-        await RunAsDefaultUserAsync();
+        var id = await RunAsDefaultUserAsync();
 
         var query = new AuthUserQuery();
 
         var result = await SendAsync(query);
 
-        result.UserId.Should().NotBeEmpty();
+        result.UserId.Should().Be(id);
     }
 }

@@ -2,6 +2,7 @@ namespace CleanArchitecture.Application.IntegrationTests.Orders.Command;
 
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Application.Common.Security;
+using CleanArchitecture.Application.IntegrationTests.Helpers;
 using CleanArchitecture.Application.Orders.Command.CreateOrderCommand;
 using CleanArchitecture.Domain.Enums;
 using FluentAssertions;
@@ -13,12 +14,7 @@ public class CreateOrderCommandTests : BaseTestFixture
     public async Task ShouldCreateCheckoutStripe()
     {
         await RunAsDefaultUserAsync();
-        Product product = new Product()
-        {
-            Title = "Phone",
-            Price = 100,
-            Description = "olsdfsdfd"
-        };
+        Product product = ProductHelper.GetSofa();
         await AddAsync(product);
 
         var command = new CreateOrderCommand()
@@ -42,12 +38,7 @@ public class CreateOrderCommandTests : BaseTestFixture
     public async Task ShouldCreateCheckoutCOD()
     {
         await RunAsDefaultUserAsync();
-        Product product = new Product()
-        {
-            Title = "Phone",
-            Price = 100,
-            Description = "olsdfsdfd"
-        };
+        Product product = ProductHelper.GetCar();
         await AddAsync(product);
 
         var command = new CreateOrderCommand()
